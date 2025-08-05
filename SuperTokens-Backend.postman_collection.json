@@ -1,0 +1,427 @@
+{
+	"info": {
+		"_postman_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+		"name": "SuperTokens Node.js Backend",
+		"description": "Complete API collection for SuperTokens Node.js Express Backend with authentication endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12345678"
+	},
+	"item": [
+		{
+			"name": "Health & Public",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Check server health and status"
+					},
+					"response": []
+				},
+				{
+					"name": "Public Hello",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/public/hello",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"public",
+								"hello"
+							]
+						},
+						"description": "Simple hello world endpoint - no authentication required"
+					},
+					"response": []
+				},
+				{
+					"name": "Public Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/public/info",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"public",
+								"info"
+							]
+						},
+						"description": "Get application information and available features"
+					},
+					"response": []
+				},
+				{
+					"name": "Public Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/public/status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"public",
+								"status"
+							]
+						},
+						"description": "Service health and performance metrics"
+					},
+					"response": []
+				}
+			],
+			"description": "Public endpoints that don't require authentication"
+		},
+		{
+			"name": "Authentication (SuperTokens)",
+			"item": [
+				{
+					"name": "Sign Up",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"formFields\": [\n    {\n      \"id\": \"email\",\n      \"value\": \"test@example.com\"\n    },\n    {\n      \"id\": \"password\",\n      \"value\": \"password123\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/signup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"signup"
+							]
+						},
+						"description": "Register a new user with email and password"
+					},
+					"response": []
+				},
+				{
+					"name": "Sign In",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"formFields\": [\n    {\n      \"id\": \"email\",\n      \"value\": \"test@example.com\"\n    },\n    {\n      \"id\": \"password\",\n      \"value\": \"password123\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/signin",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"signin"
+							]
+						},
+						"description": "Sign in an existing user"
+					},
+					"response": []
+				},
+				{
+					"name": "Sign Out",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/signout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"signout"
+							]
+						},
+						"description": "Sign out the current user (requires authentication)"
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Session",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/session/refresh",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"session",
+								"refresh"
+							]
+						},
+						"description": "Refresh the user session"
+					},
+					"response": []
+				}
+			],
+			"description": "SuperTokens authentication endpoints"
+		},
+		{
+			"name": "Custom Auth Endpoints",
+			"item": [
+				{
+					"name": "Get Session Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/session",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"session"
+							]
+						},
+						"description": "Get current session information (requires authentication)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Current User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"me"
+							]
+						},
+						"description": "Get current user profile information (requires authentication)"
+					},
+					"response": []
+				}
+			],
+			"description": "Custom authentication endpoints"
+		},
+		{
+			"name": "Protected Endpoints",
+			"item": [
+				{
+					"name": "Get Profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/protected/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"protected",
+								"profile"
+							]
+						},
+						"description": "Get user profile information (requires authentication)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Doe\",\n  \"bio\": \"Software Developer\",\n  \"preferences\": {\n    \"theme\": \"dark\",\n    \"notifications\": true\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/protected/update-profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"protected",
+								"update-profile"
+							]
+						},
+						"description": "Update user profile (requires authentication)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/protected/dashboard",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"protected",
+								"dashboard"
+							]
+						},
+						"description": "Get user dashboard data with statistics and recent activity (requires authentication)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Account",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/protected/account",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"protected",
+								"account"
+							]
+						},
+						"description": "Delete user account and revoke all sessions (requires authentication)"
+					},
+					"response": []
+				}
+			],
+			"description": "Protected endpoints that require authentication"
+		},
+		{
+			"name": "Error Testing",
+			"item": [
+				{
+					"name": "404 - Non-existent Route",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/non-existent",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"non-existent"
+							]
+						},
+						"description": "Test 404 error handling for non-existent routes"
+					},
+					"response": []
+				},
+				{
+					"name": "401 - Unauthorized Protected Route",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/protected/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"protected",
+								"profile"
+							]
+						},
+						"description": "Test accessing protected route without authentication (should return 401)"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for testing error scenarios"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}

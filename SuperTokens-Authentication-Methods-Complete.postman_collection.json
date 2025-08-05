@@ -1,0 +1,1258 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+		"name": "SuperTokens Authentication Methods - Complete Collection",
+		"description": "Comprehensive collection for testing all authentication methods: EmailPassword, Passwordless, ThirdParty OAuth, and Unified endpoints. This collection covers signup, signin, and session management for all authentication types.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12345678"
+	},
+	"item": [
+		{
+			"name": "🏠 Health & Info",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Check if the server is running and healthy"
+					},
+					"response": []
+				},
+				{
+					"name": "App Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/public/info",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"public",
+								"info"
+							]
+						},
+						"description": "Get application information and available features"
+					},
+					"response": []
+				}
+			],
+			"description": "Basic health and information endpoints"
+		},
+		{
+			"name": "🔐 1. Email/Password Authentication",
+			"item": [
+				{
+					"name": "Email/Password Signup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.status === 'success' && response.data.user) {",
+									"        pm.environment.set('userId', response.data.user.id);",
+									"        pm.environment.set('userEmail', response.data.user.email);",
+									"        console.log('✅ Email/Password signup successful');",
+									"        console.log('User ID:', response.data.user.id);",
+									"    }",
+									"} else if (pm.response.code === 409) {",
+									"    console.log('⚠️ User already exists - this is expected for testing');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{testEmail}}\",\n  \"password\": \"{{testPassword}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/signup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"signup"
+							]
+						},
+						"description": "Create a new user account using email and password"
+					},
+					"response": []
+				},
+				{
+					"name": "Email/Password Signin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.status === 'OK') {",
+									"        console.log('✅ Email/Password signin successful');",
+									"        // Extract session cookies",
+									"        const cookies = pm.cookies.toObject();",
+									"        console.log('Session cookies set:', Object.keys(cookies));",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"formFields\": [\n    {\n      \"id\": \"email\",\n      \"value\": \"{{testEmail}}\"\n    },\n    {\n      \"id\": \"password\",\n      \"value\": \"{{testPassword}}\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/signin",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"signin"
+							]
+						},
+						"description": "Sign in with email and password using SuperTokens format"
+					},
+					"response": []
+				}
+			],
+			"description": "Traditional email and password authentication"
+		},
+		{
+			"name": "📱 2. Passwordless Authentication",
+			"item": [
+				{
+					"name": "Create Passwordless Code",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.status === 'OK') {",
+									"        pm.environment.set('deviceId', response.deviceId);",
+									"        pm.environment.set('preAuthSessionId', response.preAuthSessionId);",
+									"        console.log('✅ Passwordless code created successfully');",
+									"        console.log('Device ID:', response.deviceId);",
+									"        console.log('Pre-auth Session ID:', response.preAuthSessionId);",
+									"        console.log('📧 Check email for magic link or OTP code');",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{testEmail}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/signinup/code",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"signinup",
+								"code"
+							]
+						},
+						"description": "Create a passwordless authentication code (magic link + OTP)"
+					},
+					"response": []
+				},
+				{
+					"name": "Consume Passwordless Code",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.status === 'OK') {",
+									"        console.log('✅ Passwordless authentication successful');",
+									"        if (response.createdNewUser) {",
+									"            console.log('🆕 New user created via passwordless');",
+									"        } else {",
+									"            console.log('🔐 Existing user signed in via passwordless');",
+									"        }",
+									"        pm.environment.set('userId', response.user.id);",
+									"    }",
+									"} else {",
+									"    console.log('❌ Note: You need a real OTP code from email to test this');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"preAuthSessionId\": \"{{preAuthSessionId}}\",\n  \"userInputCode\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/signinup/code/consume",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"signinup",
+								"code",
+								"consume"
+							]
+						},
+						"description": "Consume the passwordless code (requires real OTP from email)"
+					},
+					"response": []
+				}
+			],
+			"description": "Passwordless authentication using magic links and OTP codes"
+		},
+		{
+			"name": "🌐 3. Third-Party OAuth",
+			"item": [
+				{
+					"name": "Get OAuth Providers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.status === 'success' && response.data.providers) {",
+									"        console.log('✅ OAuth providers loaded:');",
+									"        response.data.providers.forEach(provider => {",
+									"            console.log(`  - ${provider.displayName} (${provider.name}): ${provider.authUrl}`);",
+									"        });",
+									"        // Store first provider for testing",
+									"        if (response.data.providers.length > 0) {",
+									"            pm.environment.set('oauthProvider', response.data.providers[0].name);",
+									"        }",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/providers",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"providers"
+							]
+						},
+						"description": "Get list of available OAuth providers (Google, GitHub, Apple)"
+					},
+					"response": []
+				},
+				{
+					"name": "OAuth Signup Request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.status === 'redirect_required') {",
+									"        console.log('✅ OAuth signup request successful');",
+									"        console.log('Auth Method:', response.authMethod);",
+									"        console.log('Provider:', response.data.provider);",
+									"        console.log('Redirect to:', response.data.authUrl);",
+									"        console.log('📝 Copy this URL to browser to complete OAuth flow');",
+									"        pm.environment.set('oauthRedirectUrl', response.data.authUrl);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"provider\": \"google\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						},
+						"description": "Request OAuth signup with a third-party provider"
+					},
+					"response": []
+				},
+				{
+					"name": "OAuth Signin Request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.status === 'redirect_required') {",
+									"        console.log('✅ OAuth signin request successful');",
+									"        console.log('Provider:', response.data.provider);",
+									"        console.log('Redirect to:', response.data.authUrl);",
+									"        console.log('📝 Copy this URL to browser to complete OAuth flow');",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"provider\": \"github\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signin",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signin"
+							]
+						},
+						"description": "Request OAuth signin with a third-party provider"
+					},
+					"response": []
+				},
+				{
+					"name": "OAuth Provider Endpoint - Google",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    console.log('✅ Google OAuth endpoint info:');",
+									"    console.log('Status:', response.status);",
+									"    console.log('Provider:', response.data.provider);",
+									"    console.log('OAuth Flow Steps:', response.data.oauthFlow);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signin/google",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signin",
+								"google"
+							]
+						},
+						"description": "Get information about Google OAuth authentication"
+					},
+					"response": []
+				},
+				{
+					"name": "OAuth Provider Endpoint - GitHub",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    console.log('✅ GitHub OAuth endpoint info:');",
+									"    console.log('Status:', response.status);",
+									"    console.log('Provider:', response.data.provider);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signin/github",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signin",
+								"github"
+							]
+						},
+						"description": "Get information about GitHub OAuth authentication"
+					},
+					"response": []
+				},
+				{
+					"name": "OAuth Provider Endpoint - Apple",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    console.log('✅ Apple OAuth endpoint info:');",
+									"    console.log('Status:', response.status);",
+									"    console.log('Provider:', response.data.provider);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signin/apple",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signin",
+								"apple"
+							]
+						},
+						"description": "Get information about Apple OAuth authentication"
+					},
+					"response": []
+				}
+			],
+			"description": "Third-party OAuth authentication with Google, GitHub, and Apple"
+		},
+		{
+			"name": "⭐ 4. Unified Authentication (Recommended)",
+			"item": [
+				{
+					"name": "Unified Signup - Email/Password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    console.log('✅ Unified signup successful');",
+									"    console.log('Auth Method:', response.authMethod);",
+									"    if (response.data.user) {",
+									"        pm.environment.set('unifiedUserId', response.data.user.id);",
+									"        console.log('User ID:', response.data.user.id);",
+									"    }",
+									"} else if (pm.response.code === 409) {",
+									"    console.log('⚠️ User already exists');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"unified-{{$randomEmail}}\",\n  \"password\": \"UnifiedTest123!\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						},
+						"description": "Unified signup with email/password - automatically detects auth method"
+					},
+					"response": []
+				},
+				{
+					"name": "Unified Signup - Passwordless",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    console.log('✅ Unified passwordless signup successful');",
+									"    console.log('Auth Method:', response.authMethod);",
+									"    if (response.data.deviceId) {",
+									"        pm.environment.set('unifiedDeviceId', response.data.deviceId);",
+									"        pm.environment.set('unifiedPreAuthSessionId', response.data.preAuthSessionId);",
+									"        console.log('📧 Check email for magic link/OTP');",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"passwordless-{{$randomEmail}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						},
+						"description": "Unified signup with passwordless (no password = passwordless mode)"
+					},
+					"response": []
+				},
+				{
+					"name": "Unified Signup - OAuth",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    console.log('✅ Unified OAuth signup request');",
+									"    console.log('Auth Method:', response.authMethod);",
+									"    console.log('Provider:', response.data.provider);",
+									"    console.log('Redirect URL:', response.data.authUrl);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"provider\": \"google\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						},
+						"description": "Unified signup with OAuth provider (provider = OAuth mode)"
+					},
+					"response": []
+				},
+				{
+					"name": "Unified Signin - Email/Password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    console.log('✅ Unified signin successful');",
+									"    console.log('Auth Method:', response.authMethod);",
+									"    if (response.data.user) {",
+									"        console.log('User ID:', response.data.user.id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{testEmail}}\",\n  \"password\": \"{{testPassword}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signin",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signin"
+							]
+						},
+						"description": "Unified signin with email/password"
+					},
+					"response": []
+				},
+				{
+					"name": "Unified Signin - Passwordless Request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    console.log('✅ Unified passwordless signin code sent');",
+									"    console.log('Auth Method:', response.authMethod);",
+									"    if (response.data.deviceId) {",
+									"        pm.environment.set('signinDeviceId', response.data.deviceId);",
+									"        pm.environment.set('signinPreAuthSessionId', response.data.preAuthSessionId);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{testEmail}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signin",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signin"
+							]
+						},
+						"description": "Unified signin with passwordless (email only = send code)"
+					},
+					"response": []
+				},
+				{
+					"name": "Unified Signin - OAuth",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    console.log('✅ Unified OAuth signin request');",
+									"    console.log('Auth Method:', response.authMethod);",
+									"    console.log('Provider:', response.data.provider);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"provider\": \"github\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signin",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signin"
+							]
+						},
+						"description": "Unified signin with OAuth provider"
+					},
+					"response": []
+				}
+			],
+			"description": "Smart unified endpoints that detect authentication method automatically"
+		},
+		{
+			"name": "🔒 5. Session Management",
+			"item": [
+				{
+					"name": "Get Session Info",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    console.log('✅ Session is valid');",
+									"    console.log('User ID:', response.userId);",
+									"    console.log('Session Handle:', response.sessionHandle);",
+									"} else if (pm.response.code === 401) {",
+									"    console.log('❌ No valid session - please login first');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/session",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"session"
+							]
+						},
+						"description": "Get current session information (requires valid session)"
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Session",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    console.log('✅ Session refreshed successfully');",
+									"} else {",
+									"    console.log('❌ Session refresh failed');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/session/refresh",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"session",
+								"refresh"
+							]
+						},
+						"description": "Refresh the current session"
+					},
+					"response": []
+				},
+				{
+					"name": "Sign Out",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    console.log('✅ Successfully signed out');",
+									"    // Clear stored variables",
+									"    pm.environment.unset('userId');",
+									"    pm.environment.unset('userEmail');",
+									"} else {",
+									"    console.log('❌ Sign out failed');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/signout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"signout"
+							]
+						},
+						"description": "Sign out and invalidate current session"
+					},
+					"response": []
+				}
+			],
+			"description": "Session management and authentication state"
+		},
+		{
+			"name": "🛡️ 6. Protected Endpoints",
+			"item": [
+				{
+					"name": "Get User Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    console.log('✅ Profile retrieved successfully');",
+									"    console.log('User ID:', response.data.userId);",
+									"} else if (pm.response.code === 401) {",
+									"    console.log('❌ Authentication required - please sign in first');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/protected/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"protected",
+								"profile"
+							]
+						},
+						"description": "Get user profile (requires authentication)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Dashboard Data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    console.log('✅ Dashboard data retrieved');",
+									"    console.log('Total Logins:', response.data.stats.totalLogins);",
+									"} else if (pm.response.code === 401) {",
+									"    console.log('❌ Authentication required');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/protected/dashboard",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"protected",
+								"dashboard"
+							]
+						},
+						"description": "Get dashboard data (requires authentication)"
+					},
+					"response": []
+				},
+				{
+					"name": "List All Users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    console.log('✅ Users list retrieved');",
+									"    console.log('Total Users:', response.data.totalCount);",
+									"    console.log('Users in response:', response.data.users.length);",
+									"} else if (pm.response.code === 401) {",
+									"    console.log('❌ Authentication required');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/protected/users?limit=10&offset=0",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"protected",
+								"users"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						},
+						"description": "Get list of all users (admin endpoint, requires authentication)"
+					},
+					"response": []
+				}
+			],
+			"description": "Protected endpoints that require authentication"
+		},
+		{
+			"name": "🧪 7. Error Testing",
+			"item": [
+				{
+					"name": "Invalid Email Format",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 400) {",
+									"    console.log('✅ Invalid email properly rejected');",
+									"    const response = pm.response.json();",
+									"    console.log('Error:', response.error);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"invalid-email\",\n  \"password\": \"test123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						},
+						"description": "Test error handling for invalid email format"
+					},
+					"response": []
+				},
+				{
+					"name": "Unsupported OAuth Provider",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 400) {",
+									"    console.log('✅ Unsupported provider properly rejected');",
+									"    const response = pm.response.json();",
+									"    console.log('Error:', response.error);",
+									"    console.log('Available providers:', response.availableProviders);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"provider\": \"invalid_provider\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signin",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signin"
+							]
+						},
+						"description": "Test error handling for unsupported OAuth provider"
+					},
+					"response": []
+				},
+				{
+					"name": "Missing Required Fields",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 400) {",
+									"    console.log('✅ Missing fields properly rejected');",
+									"    const response = pm.response.json();",
+									"    console.log('Error:', response.error);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						},
+						"description": "Test error handling for missing required fields"
+					},
+					"response": []
+				}
+			],
+			"description": "Test error handling and validation"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Auto-set common variables if not already set",
+					"if (!pm.environment.get('baseUrl')) {",
+					"    pm.environment.set('baseUrl', 'http://localhost:8080');",
+					"}",
+					"",
+					"if (!pm.environment.get('testEmail')) {",
+					"    pm.environment.set('testEmail', 'test@example.com');",
+					"}",
+					"",
+					"if (!pm.environment.get('testPassword')) {",
+					"    pm.environment.set('testPassword', 'testPassword123!');",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Log response time for performance monitoring",
+					"console.log('⏱️ Response time:', pm.response.responseTime + 'ms');",
+					"",
+					"// Log any errors",
+					"if (pm.response.code >= 400) {",
+					"    try {",
+					"        const errorResponse = pm.response.json();",
+					"        console.log('❌ Error Response:', errorResponse);",
+					"    } catch (e) {",
+					"        console.log('❌ Error Response (raw):', pm.response.text());",
+					"    }",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "testEmail",
+			"value": "test@example.com",
+			"type": "string"
+		},
+		{
+			"key": "testPassword",
+			"value": "testPassword123!",
+			"type": "string"
+		}
+	]
+}

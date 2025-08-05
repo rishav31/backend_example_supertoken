@@ -1,0 +1,20 @@
+core_config_version: 0
+host: "0.0.0.0"
+port: 3567
+access_token_validity: 3600 # 1 hour in seconds
+refresh_token_validity: 144000 # 100 days in seconds (100 days * 24 hours * 60 minutes)
+
+# Database configuration (using in-memory SQLite for demo)
+# For production, you should use PostgreSQL or MySQL
+database_driver: "sqlite"
+database_file: "./supertokens_db.sqlite"
+
+# API keys (optional, for additional security)
+# api_keys:
+
+# Password policy (optional)
+password_reset_token_lifetime: 3600000 # 1 hour in milliseconds
+email_verification_token_lifetime: 86400000 # 1 day in milliseconds
+
+# SuperTokens core settings
+supertokens_max_cdi_version: "4.0"
